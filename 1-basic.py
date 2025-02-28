@@ -1,5 +1,4 @@
 import os
-from pydoc import cli
 from openai import OpenAI
 from dotenv import load_dotenv
 
