@@ -1,7 +1,6 @@
-import os
-from openai import OpenAI
-from dotenv import load_dotenv
 from pydantic import BaseModel
+
+from openai_client import get_client
 
 
 class CalendarEvent(BaseModel):
@@ -11,11 +10,8 @@ class CalendarEvent(BaseModel):
 
 
 def main():
-    load_dotenv()
-    assert os.getenv("OPENAI_API_KEY") is not None, "OPENAI_API_KEY is not set"
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY")
-    )
+    
+    client = get_client()
     
     completion = client.beta.chat.completions.parse(
         model='gpt-4o-mini',
