@@ -1,4 +1,6 @@
 import json
+
+from pydantic import BaseModel, Field
 from openai_client import get_client
 import requests
 
@@ -21,10 +23,7 @@ def main():
             {'role': 'user', 'content': 'what is the weather like in Paris?'}
         ]
 
-    completion = client.chat.completions.create(
-        model='gpt-4o-mini',
-        messages=messages,
-        tools=[
+    tools = [
             {
                 'type': 'function',
                 'function': {
@@ -51,6 +50,11 @@ def main():
                 }
             }
         ]
+
+    completion = client.chat.completions.create(
+        model='gpt-4o-mini',
+        messages=messages,
+        tools=tools
     )
     completion.model_dump()
     
@@ -63,7 +67,7 @@ def main():
     for tool_call in completion.choices[0].message.tool_calls:
         message = completion.choices[0].message
         print(f'message: {message}')
-        messages.append(message)
+        messages.append(message.model_dump())
         
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments)
@@ -79,9 +83,26 @@ def main():
         print(f'tool_message: {tool_message}')
         messages.append(tool_message)
         
-        
-
-
+    
+    class WeatherResponse(BaseModel):
+        temperature: float = Field(
+            description='the current temperature for the given coordinates'
+        )
+        response: str = Field(
+            description='a natural language response to the user\'s question'
+        )
+    print()
+    [print(_message) for _message in messages]
+    final_completion = client.beta.chat.completions.parse(
+        model='gpt-4o-mini',
+        messages=messages,
+        tools=tools,
+        response_format=WeatherResponse
+    )
+    final_response = final_completion.choices[0].message.parsed
+    print(f'final_response: {final_response}')
+    
+    
 
 if __name__ == "__main__":
     main()
