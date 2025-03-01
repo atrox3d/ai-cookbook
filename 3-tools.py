@@ -1,3 +1,4 @@
+import json
 from openai_client import get_client
 import requests
 
@@ -15,12 +16,14 @@ def main():
     
     client = get_client()
     
-    completion = client.chat.completions.create(
-        model='gpt-4o-mini',
-        messages=[
+    messages = [
             {'role': 'system', 'content': 'you are a helpful assistant'},
             {'role': 'user', 'content': 'what is the weather like in Paris?'}
-        ],
+        ]
+
+    completion = client.chat.completions.create(
+        model='gpt-4o-mini',
+        messages=messages,
         tools=[
             {
                 'type': 'function',
@@ -50,6 +53,34 @@ def main():
         ]
     )
     completion.model_dump()
+    
+    
+    def call_function(name:str, args:dict):
+        if name == 'get_weather':
+            return get_weather(**args)
+    
+    
+    for tool_call in completion.choices[0].message.tool_calls:
+        message = completion.choices[0].message
+        print(f'message: {message}')
+        messages.append(message)
+        
+        name = tool_call.function.name
+        args = json.loads(tool_call.function.arguments)
+        print(f'calling {name}({args})')
+        result = call_function(name, args)
+        print(f'result: {result}')
+        
+        tool_message = {
+            'role': 'tool',
+            'tool_call_id': tool_call.id,
+            'content': str(result)
+        }
+        print(f'tool_message: {tool_message}')
+        messages.append(tool_message)
+        
+        
+
 
 
 if __name__ == "__main__":
