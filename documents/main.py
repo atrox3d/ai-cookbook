@@ -10,6 +10,7 @@ DATA_DIR = 'data'
 
 Path(DATA_DIR).mkdir(exist_ok=True)
 
+
 def convert(pdf_path:str):
     converter = DocumentConverter()
 
@@ -20,12 +21,14 @@ def convert(pdf_path:str):
 
     return json_out
 
+
 def get_filename_from_url(url):
     path = Path(url)
     if path.suffix:
         return path.name
     else:
         return "document.pdf"
+
 
 def download_pdf(url:str, data_dir:str=DATA_DIR):
     response = requests.get(url)
@@ -37,6 +40,7 @@ def download_pdf(url:str, data_dir:str=DATA_DIR):
     pdf_path = Path(data_dir) / filename
     with open(pdf_path, 'wb') as f:
         f.write(response.content)
+
 
 def main():
     local_path = Path(DATA_DIR, get_filename_from_url(PDF_URL))
