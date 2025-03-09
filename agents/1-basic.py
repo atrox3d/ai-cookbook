@@ -1,28 +1,8 @@
-import sys
-import os
 from pathlib import Path
 
-# to use openai_client.py after moving tutorials under agents
-# either :
-#   - copy ../openai_client.py
-#   * link to ../openai_client.py
-#   - hack sys.argv
-#   - use python -m agents.1-basic
-#   
-cwd = os.getcwd()       # ai-cookbook
-cmdpath = Path(         # ai-cookbook/agents
-    sys.argv[0]
-).parent.absolute()
-path = sys.path[0]      # ai-cookbook/agents
-
-
-print(f'cwd     : {cwd}')
-print(f'cmdpath : {cmdpath}')
-print(f'path    : {path}')
-
-
-
-
+# needed to keep openai_client.py one level up
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from openai_client import get_client
 
 
@@ -40,7 +20,5 @@ def main():
     print(completion.choices[0].message.content)
 
 
-
 if __name__ == "__main__":
-    # main()
-    ...
+    main()
