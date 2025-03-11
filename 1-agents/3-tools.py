@@ -1,7 +1,11 @@
 import json
 
-from pydantic import BaseModel, Field
+# needed to keep openai_client.py one level up
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from openai_client import get_client
+
+from pydantic import BaseModel, Field
 import requests
 
 def get_weather(latitude, longitude):
