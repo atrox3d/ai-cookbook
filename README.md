@@ -19,12 +19,12 @@
 
 # project structure
 
-````
+```bash
 - 1-agents
-    - 1-basic.py
-    - 2-structured
-    - 3-tools
+    - 1-basic.py    # basic openai call
+    - 2-structured  # structured openai call using pydantic
+    - 3-tools       # use tools to call weather api
 
 - 2-documents
-    - main.py
+    - main.py       # use dockling to retrieve data from pdf
 `````
