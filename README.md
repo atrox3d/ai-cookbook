@@ -20,6 +20,8 @@
 # project structure
 
 ```bash
+- openai_client.py  # common helper to get OpenAPI client
+
 - 1-agents
     - 1-basic.py    # basic openai call
     - 2-structured  # structured openai call using pydantic
